@@ -1,0 +1,25 @@
+To determine a planet’s habitability, the following columns and their optimal values might be considered:
+
+- pl_eqt (Equilibrium Temperature): The temperature on the planet plays a crucial role in its ability to sustain life. A planet is more likely to support life if its equilibrium temperature allows for liquid water. Therefore, a temperature range of roughly 0 to 100°C (or 273.15K to 373.15K in Kelvin) could indicate a higher likelihood of habitability.
+
+- pl_orbsmax (Orbit Semi-Major Axis): The distance of the planet from its host star influences its temperature and whether it resides within the "habitable zone". The optimal range is not definite as it depends on the star's size and temperature. However, for a star similar to our sun, the habitable zone is often considered to be around 0.9 to 1.5 AU (astronomical units).
+
+- pl_rade/pl_radj (Planet Radius):
+  - Earth Radius-based (pl_rade): Planets with a size 1 to about 1.6 time Earth's radius are more likely to be rocky planets with liquid water on the surface, hence suitable for life. 
+  - Jupiter Radius-based (pl_radj): Converting the above range to Jupiter radii, we have approximately 0.0892 to 0.1427 Jupiter radii. 
+
+Additional columns:
+
+- pl_orbeccen (Orbital Eccentricity): Planets with lower eccentricity (nearer to 0) have more circular orbits and are likely to have a more stable climate, which is beneficial for life. An elliptical orbit (higher eccentricity) can lead to extreme temperature differences that can be detrimental to life as we know it. Optimal range: close to 0.
+
+- pl_insol (Insolation Flux): This indicates the amount of stellar energy the planet receives and also affects the temperature and climate on the planet. The optimal range is around 0.36 to 1.11, the Insolation values that Earth receives.
+
+- st_teff (Stellar Effective Temperature): The host star's temperature also plays a crucial part. Stars hotter or cooler than our sun could still host habitable planets, but for temperatures like that of our Sun, life as we know it is more likely. Optimal range for Sun-like stars: Approximately 5000 to 6000 K.
+
+- st_rad (Stellar Radius) and st_mass (Stellar Mass): Affects the habitable zone of the star system and the star's lifespan. Stars much larger or smaller than our Sun may have shorter lifespans or different radiation conditions. Optimal range: comparable to the Sun's radius and mass.
+
+- st_met (Stellar Metallicity): Stars with higher metallicity are more likely to have planets, including potentially habitable ones. The optimal range is not well defined but should be comparable or higher than our Sun's metallicity.
+
+- sy_dist (Distance): The closer a star system is to Earth, the easier it will be to study any potentially habitable planets within that system. The optimal value is closer distances.
+
+It's important to note that the exact measurements for habitability can vary, and we base our assumptions on life as we understand it on Earth. There might exist lifeforms that can survive under different conditions that we aren't aware of yet.
