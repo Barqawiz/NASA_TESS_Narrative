@@ -25,20 +25,52 @@
          .annotation-group{
             pointer-events: none;
         }
+        .unfocused {
+            opacity: 0.3;
+        }
     </style>
 </head>
 <body>
     <div id="visualization"></div>
     <script>
+        let data = null;
+        let currentScene = null;
+
+        function resetFilter(event) {
+
+          var clickedElement = event.target;
+          if (!clickedElement.closest("rect")) {
+            if (currentScene == "s1") {
+              // Clear the visualization
+              d3.select("#visualization").html("");
+              // Draw Scene 1
+              drawScene1(null);
+            }
+          }
+          
+        }
+
         // Load the data
-        d3.csv("data/tess_confirmed_plannets.csv").then(function(data) {
+        d3.csv("data/tess_confirmed_plannets.csv").then(function(myData) {
+            data = myData;
+
             // Scene 1: Overview
-            drawScene1(data);
+            drawScene1(null);
         });
 
-        function drawScene1(data) {
+        function drawScene1(filteredData) {
+          
+          // set the current scene
+          currentScene = "s1";
 
-           // Count discoveries per year
+          // contorl filtered data
+          if (!filteredData) {
+            filteredData = data;
+          }
+
+          var filteredYear = filteredData.length < data.length ? filteredData[0].disc_year : null;
+
+          // Count discoveries per year
           var discoveriesPerYear = d3.rollup(data, v => v.length, d => d.disc_year);
           var countedData = Array.from(discoveriesPerYear, ([year, count]) => ({ year, count }));
 
@@ -54,6 +86,9 @@
           var svg = d3.select("#visualization").append("svg")
             .attr("width", 1800)
             .attr("height", 600);
+
+          // reset the filter
+          svg.on("click", resetFilter); 
 
           // Histogram
           var histogramWidth = 400;
@@ -80,6 +115,7 @@
             .attr("y", d => y(d.count))
             .attr("height", d => histogramHeight - y(d.count))
             .attr("fill", d => colorScale(d.year))
+            .classed("unfocused", d => d.year !== filteredYear && filteredYear != null)
             .on("mouseover", function (event, d) {
               tooltip.transition()
                 .duration(200)
@@ -92,7 +128,21 @@
               tooltip.transition()
                 .duration(500)
                 .style("opacity", 0);
-            });
+            }).on("click", function(event, d) {
+
+              // clean the tool tip
+                tooltip.transition()
+                .duration(500)
+                .style("opacity", 0);
+              // Filter the data based on the selected year
+              filteredData = data.filter(p => p.disc_year === d.year); 
+            
+              // Clear the visualization
+              d3.select("#visualization").html("");
+
+              // Draw the updated charts
+              drawScene1(filteredData); 
+          });
 
           histogram.append("g")
             .attr("transform", "translate(0, " + histogramHeight + ")")
@@ -124,6 +174,8 @@
             .style("text-anchor", "middle")
             .style("font-size", "20px");
 
+
+
           // Scatter plot
           var scatterWidth = 400;
           var scatterHeight = 300;
@@ -140,7 +192,7 @@
             .attr("transform", "translate(" + (histogramWidth + 200) + ", 50)");
 
           scatter.selectAll("circle")
-            .data(data)
+            .data(filteredData)
             .enter().append("circle")
             .attr("cx", d => xScatter(d.pl_eqt))
             .attr("cy", d => yScatter(d.pl_orbeccen))
@@ -265,6 +317,10 @@
         }
 
         function drawScene2(planet, data) {
+
+            // set the current scene
+            currentScene = "s2";
+
             // Create SVG for the visualization
             var svg = d3.select("#visualization").append("svg")
                 .attr("width", 800)
@@ -296,7 +352,7 @@
                     // Clear the visualization
                     d3.select("#visualization").html("");
                     // Draw Scene 1
-                    drawScene1(data);
+                    drawScene1(null);
                 });
         }
     </script>
