@@ -126,7 +126,7 @@
           // Create SVG for the visualization
           var svg = d3.select("#visualization").append("svg")
               .attr("width", 1200)
-              .attr("height", 600);
+              .attr("height", 900);
 
           // reset the filter
           svg.on("click", resetFilter);
@@ -210,14 +210,14 @@
 
           histogram.append("text")
               .attr("x", histogramWidth / 2)
-              .attr("y", -10)
+              .attr("y", -30)
               .text("Histogram of Exoplanet Discoveries by Year")
               .style("text-anchor", "middle")
               .style("font-size", "20px");
 
 
 
-          // Scatter plot
+          // Scatter plot 1
           var scatterWidth = 400;
           var scatterHeight = 300;
 
@@ -299,10 +299,145 @@
 
           scatter.append("text")
               .attr("x", scatterWidth / 2)
-              .attr("y", -10)
+              .attr("y", -30)
               .text("Scatter Plot of Exoplanets")
               .style("text-anchor", "middle")
               .style("font-size", "20px");
+
+          // Annotations for Stellar 1
+          var annotations = [{
+              note: {
+                  label: "Potential Habitable Zone",
+                  align: "left"
+              },
+              x: xScatter(350), // Adjusted x position for annotation
+              y: yScatter(0.05), // Adjusted y position for annotation
+              dx: 200,
+              dy: -50,
+              subject: {
+                  radius: 30
+              },
+              type: d3.annotationCalloutCircle
+          }];
+
+          var makeAnnotations = d3.annotation()
+              .annotations(annotations);
+
+          scatter.append("g")
+              .attr("class", "annotation-group")
+              .call(makeAnnotations);
+
+          // Scatter plot 2: Stellar Mass vs Radius
+          var scatter2Y = 530;  // Y offset
+          var scatter2Width = 800;
+          var scatter2Height = 300;
+
+          var xScatter2 = d3.scaleLinear()
+              .domain([d3.min(data, d => +d.st_mass), d3.max(data, d => +d.st_mass)])
+              .range([0, scatter2Width]);
+
+          var yScatter2 = d3.scaleLinear()
+              .domain([d3.min(data, d => +d.st_rad), d3.max(data, d => +d.st_rad)])
+              .range([scatter2Height, 0]);
+
+          var scatter2 = svg.append("g")
+              .attr("transform", "translate(" + (histogramWidth / 2) + ", " + scatter2Y + ")");
+
+          scatter2.selectAll("circle")
+              .data(filteredData)
+              .enter().append("circle")
+              .attr("cx", d => xScatter2(d.st_mass))
+              .attr("cy", d => yScatter2(d.st_rad))
+              .attr("r", 5)
+              .attr("fill", (d) => colorScale(d.disc_year))
+              .attr("stroke", (d) => {
+                  if (d.st_mass >= 0.8 && d.st_mass <= 1.2 && d.st_rad >= 0.8 && d.st_rad <= 1.2) {
+                      // condition for earth similar stars
+                      return "black";
+                  } else {
+                      return null;
+                  }
+              })
+              .attr("stroke-width", (d) => {
+                  if (d.st_mass >= 0.8 && d.st_mass <= 1.2 && d.st_rad >= 0.8 && d.st_rad <= 1.2) {
+                      return 1.5;
+                  } else {
+                      return 0;
+                  }
+              })
+              .on("mouseover", function(event, d) {
+                  tooltip.transition()
+                      .duration(200)
+                      .style("opacity", .9);
+                  tooltip.html("Stellar Mass: " + d.st_mass + "<br/>Stellar Radius: " + d.st_rad)
+                      .style("left", (event.pageX) + "px")
+                      .style("top", (event.pageY - 28) + "px");
+              })
+              .on("mouseout", function(d) {
+                  tooltip.transition()
+                      .duration(500)
+                      .style("opacity", 0);
+              })
+              .on("click", function(event, d) {
+                  // clean the tool tip
+                  tooltip.transition()
+                      .duration(500)
+                      .style("opacity", 0);
+                  // Clear the visualization
+                  d3.select("#visualization").html("");
+                  // Draw Scene 2
+                  drawScene2(d);
+              });
+
+          scatter2.append("g")
+              .attr("transform", "translate(0, " + scatter2Height + ")")
+              .call(d3.axisBottom(xScatter2));
+
+          scatter2.append("g")
+              .call(d3.axisLeft(yScatter2));
+
+          scatter2.append("text")
+              .attr("x", scatter2Width / 2)
+              .attr("y", scatter2Height + 40)
+              .text("Stellar Mass")
+              .style("text-anchor", "middle");
+
+          scatter2.append("text")
+              .attr("x", -scatter2Height / 2)
+              .attr("y", -30)
+              .text("Stellar Radius")
+              .style("text-anchor", "middle")
+              .attr("transform", "rotate(-90)");
+
+          scatter2.append("text")
+              .attr("x", scatter2Width / 2)
+              .attr("y", -30)
+              .text("Scatter Plot of Stellar Mass vs Radius")
+              .style("text-anchor", "middle")
+              .style("font-size", "20px");
+
+          // Annotation for Scatter 2
+          var annotations2 = [{
+              note: {
+                  label: "Potential Habitable Zone",
+                  align: "left"
+              },
+              x: xScatter2(1), // Adjusted x position for annotation for stellar mass
+              y: yScatter2(1), // Adjusted y position for annotation for stellar radius
+              dx: -200,
+              dy: -50,
+              subject: {
+                  radius: 40
+              },
+              type: d3.annotationCalloutCircle
+          }];
+
+          var makeAnnotations2 = d3.annotation()
+              .annotations(annotations2);
+
+          scatter2.append("g")
+              .attr("class", "annotation-group")
+              .call(makeAnnotations2);
 
           // Legend
           var legend = svg.append("g")
@@ -338,28 +473,7 @@
               .attr("class", "tooltip")
               .style("opacity", 0);
 
-          // Annotations
-          var annotations = [{
-              note: {
-                  label: "Potential Habitable Zone",
-                  align: "left"
-              },
-              x: xScatter(350), // Adjusted x position for annotation
-              y: yScatter(0.05), // Adjusted y position for annotation
-              dx: 200,
-              dy: -50,
-              subject: {
-                  radius: 30
-              },
-              type: d3.annotationCalloutCircle
-          }];
-
-          var makeAnnotations = d3.annotation()
-              .annotations(annotations);
-
-          scatter.append("g")
-              .attr("class", "annotation-group")
-              .call(makeAnnotations);
+          
       }
 
       function drawScene2(planet) {
