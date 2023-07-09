@@ -1,7 +1,7 @@
 # NASA TESS Mission Narrative
  A narrative visualization project showcasing TESS's mission and exploring Earth-like exoplanets.
 
-<svg fill="none" viewBox="0 0 600 300" width="600" height="300" xmlns="http://www.w3.org/2000/svg">
+<svg fill="none" viewBox="0 0 600 300" width="600" height="250" xmlns="http://www.w3.org/2000/svg">
   <foreignObject width="100%" height="100%">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>
@@ -29,12 +29,12 @@
         }
 
         .container {
-          background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+          background: linear-gradient(-45deg, #155799, #e73c7e, #23a6d5, #159957);
           background-size: 400% 400%;
           animation: gradient 15s ease infinite;
 
           width: 100%;
-          height: 220px;
+          height: 250px;
 
           display: flex;
           justify-content: center;
@@ -48,6 +48,7 @@
           animation: hi 1.5s linear -0.5s infinite;
           display: inline-block;
           transform-origin: 70% 70%;
+          color:#FFF;
         }
 
         @media (prefers-reduced-motion) {
