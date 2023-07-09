@@ -5,6 +5,7 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
     <script src="js/d3-annotation.min.js"></script>
+    <script src="js/d3-simple-slider.min.js"></script>
     <style>
          body {
             background: #f7f7f7;
@@ -127,7 +128,7 @@
           // Create SVG for the visualization
           var svg = d3.select("#visualization").append("svg")
               .attr("width", 1200)
-              .attr("height", 900);
+              .attr("height", 950);
 
           // reset the filter
           svg.on("click", resetFilter);
@@ -474,6 +475,30 @@
               .attr("class", "tooltip")
               .style("opacity", 0);
 
+
+          // Add button to go to Scene 3
+            svg.append("text")
+                .attr("x", 10)
+                .attr("y", 920) // adjust accordingly
+                .text("Explore Interactive Dashboard")
+                .attr("class", "scene3-button")
+                .on("click", function() {
+                    currentScene = "s3";
+                    // clean the tool tip
+                  tooltip.transition()
+                      .duration(500)
+                      .style("opacity", 0);
+                  // Clear the visualization
+                  d3.select("#visualization").html("");
+                    // Draw Scene 3
+                    drawScene3();
+                });
+
+            // Make the button look like a real button
+            svg.selectAll(".scene3-button")
+                .style("cursor", "pointer")
+                .style("fill", "steelblue")
+                .style("text-decoration", "underline");
           
       }
 
@@ -613,6 +638,26 @@
               .style("fill", "steelblue")
               .style("text-decoration", "underline");
 
+
+            // Add button to go to Scene 3
+            svg.append("text")
+                .attr("x", 160)
+                .attr("y", 600) // adjust accordingly
+                .text("Explore Interactive Dashboard")
+                .attr("class", "scene3-button")
+                .on("click", function() {
+                    // Clear the visualization
+                    d3.select("#visualization").html("");
+                    // Draw Scene 3
+                    drawScene3();
+                });
+
+            // Make the button look like a real button
+            svg.selectAll(".scene3-button")
+                .style("cursor", "pointer")
+                .style("fill", "steelblue")
+                .style("text-decoration", "underline");
+
           // Adding a title
           svg.append("text")
               .attr("x", 10)
@@ -640,8 +685,8 @@
                   return "translate(0, " + (20 * i) + ")";
               });
 
-          var marginX = 350;
-          var marginY = 550;
+          var marginX = 340;
+          var marginY = 485;
 
           legend.append("circle")
               .attr("cx", marginX + 20)
@@ -663,7 +708,267 @@
 
       function drawScene3() {
 
+        currentScene = "s3";
+
+      // Define variables to store slider values
+      var tempValue, eccenValue, radiusValue, smassValue, sradValue;
+      var xAxisValue = "pl_eqt", yAxisValue = "st_mass";
+
+      // Create SVG 
+      var svg = d3.select("#visualization").append("svg")
+        .attr("width", 1200)
+        .attr("height", 800);
+
+      // Create filters title
+      svg.append("text")
+        .attr("x", 10)
+        .attr("y", 20)
+        .text("Filter Parameters")
+        .style("font-size", "24px");
+
+      // Develop sliders using D3 slider module
+      var sliderWidth = 200;
+
+      // 1. Equilibrium Temperature Filter
+      svg.append("text")
+        .attr("x", 10)
+        .attr("y", 80)
+        .text("Equilibrium Temperature");
+
+      var tempSlider = d3
+        .sliderHorizontal()
+        .min(0)
+        .max(5000)
+        .step(1)
+        .width(sliderWidth) // Adjusted slider width
+        .displayValue(false)
+        .on('onchange', val => { tempValue = val; applyFilters(); });
+
+      svg.append("g")
+        .attr("transform", "translate(10,100)")
+        .call(tempSlider);
+
+      // 2. Orbital Eccentricity Filter
+      svg.append("text")
+        .attr("x", 10)
+        .attr("y", 180)
+        .text("Orbital Eccentricity");
+
+      var eccenSlider = d3
+        .sliderHorizontal()
+        .min(0)
+        .max(1)
+        .step(0.01)
+        .width(sliderWidth)
+        .displayValue(false)
+        .on('onchange', val => { eccenValue = val; applyFilters(); });
+
+      svg.append("g")
+        .attr("transform", "translate(10,200)")
+        .call(eccenSlider);
+
+      // 3. Planet Radius Filter
+      svg.append("text")
+        .attr("x", 10)
+        .attr("y", 280)
+        .text("Planet Radius");
+
+      var radiusSlider = d3
+        .sliderHorizontal()
+        .min(0)
+        .max(10)
+        .step(0.1)
+        .width(sliderWidth)
+        .displayValue(false)
+        .on('onchange', val => { radiusValue = val; applyFilters(); });
+
+      svg.append("g")
+        .attr("transform", "translate(10,300)")
+        .call(radiusSlider);
+
+      // 4. Stellar Mass Filter
+      svg.append("text")
+        .attr("x", 10)
+        .attr("y", 380)
+        .text("Stellar Mass");
+
+      var smassSlider = d3
+        .sliderHorizontal()
+        .min(0)
+        .max(5)
+        .step(0.1)
+        .width(sliderWidth)
+        .displayValue(false)
+        .on('onchange', val => { smassValue = val; applyFilters(); });
+
+      svg.append("g")
+        .attr("transform", "translate(10,400)")
+        .call(smassSlider);
+
+      // 5. Stellar Radius Filter
+      svg.append("text")
+        .attr("x", 10)
+        .attr("y", 480)
+        .text("Stellar Radius");
+
+      var sradSlider = d3
+        .sliderHorizontal()
+        .min(0)
+        .max(10)
+        .step(0.1)
+        .width(sliderWidth)
+        .displayValue(false)
+        .on('onchange', val => { sradValue = val; applyFilters(); });
+
+      svg.append("g")
+        .attr("transform", "translate(10,500)")
+        .call(sradSlider);
+
+      // Create filters title
+      var marginTop = 10;
+      svg.append("text")
+        .attr("x", 10)
+        .attr("y", ""+(580+marginTop)+"px")
+        .text("Axis Columns")
+        .style("font-size", "24px");
+
+      // Add dropdowns for selecting x and y axes
+      var fields = ["pl_eqt", "pl_orbeccen", "pl_radj", "st_mass", "st_rad"];
+
+      // x drop down
+      svg.append("text")
+        .attr("x", 10)
+        .attr("y", (635+marginTop))
+        .text("X:");
+
+      var dropdownX = d3.select("#visualization")
+        .append("select")
+        .style("position", "absolute")
+        .style("top", ""+(680+marginTop)+"px")
+        .style("left", "60px")
+        .on("change", function() {
+          xAxisValue = this.value;
+          applyFilters();
+        });
+      dropdownX.selectAll("option").data(fields).enter().append("option").text(d => d);
+      dropdownX.property("value", "pl_eqt");
+
+      // y drop down
+      svg.append("text")
+        .attr("x", 10)
+        .attr("y", (695+marginTop))
+        .text("Y:");
+      var dropdownY = d3.select("#visualization")
+        .append("select")
+        .style("position", "absolute")
+        .style("top", ""+(740+marginTop)+"px")
+        .style("left", "60px")
+        .on("change", function() {
+          yAxisValue = this.value;
+          applyFilters();
+        });
+      dropdownY.selectAll("option").data(fields).enter().append("option").text(d => d);
+      dropdownY.property("value", "st_mass");
+
+      // Apply filters function using the slider variables
+      function applyFilters() {
+        let filteredData = data;
+        if (tempValue) { filteredData = filteredData.filter(planet => planet.pl_eqt >= tempValue) }
+        if (eccenValue) { filteredData = filteredData.filter(planet => planet.pl_orbeccen <= eccenValue) }
+        if (radiusValue) { filteredData = filteredData.filter(planet => planet.pl_radj <= radiusValue) }
+        if (smassValue) { filteredData = filteredData.filter(planet => planet.st_mass <= smassValue) }
+        if (sradValue) { filteredData = filteredData.filter(planet => planet.st_rad <= sradValue) }
+
+        // Update the chart based on the filtered data
+        drawChart(filteredData);
       }
+
+      // drawChart function goes here
+      function drawChart(data) {
+        // Clear any previous charts
+        svg.selectAll(".chart").remove();
+
+        // Generate scatter plot chart here
+        var margin = { top: 50, right: 50, bottom: 50, left: 350 },
+          width = 1100 - margin.left - margin.right,
+          height = 600 - margin.top - margin.bottom;
+
+        var x = d3.scaleLinear()
+          .domain([0, 5000])
+          .range([0, width]);
+
+        var y = d3.scaleLinear()
+          .domain([0, 5])
+          .range([height, 0]);
+
+        var chart = svg.append("g")
+          .attr("class", "chart")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        chart.selectAll("circle")
+          .data(data)
+          .enter()
+          .append("circle")
+          .attr("cx", d => x(d.pl_eqt))
+          .attr("cy", d => y(d.st_mass))
+          .attr("r", 3)
+          .style("fill", d => colorScale(d.disc_year));
+
+        chart.append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x));
+
+        chart.append("g")
+          .call(d3.axisLeft(y));
+
+        chart.append("text")
+          .attr("x", width / 2)
+          .attr("y", height + 40)
+          .text("Equilibrium Temperature")
+          .style("text-anchor", "middle");
+
+        chart.append("text")
+          .attr("x", -height / 2)
+          .attr("y", -30)
+          .text("Stellar Mass")
+          .style("text-anchor", "middle")
+          .attr("transform", "rotate(-90)");
+
+        chart.append("text")
+          .attr("x", width / 2)
+          .attr("y", -30)
+          .text("Filtered Exoplanets")
+          .style("text-anchor", "middle")
+          .style("font-size", "20px");
+
+        
+      }
+
+      // Add colors
+      var colorScale = d3.scaleSequential()
+        .domain([2018, 2023])
+        .interpolator(d3.interpolateOranges);
+
+      // Add back button to go back to Scene 1
+        svg.append("text")
+          .attr("x", 10)
+          .attr("y", 770)
+          .text("Back to Scene 1")
+          .attr("class", "back-button")
+          .on("click", function () {
+            // Clear the visualization
+            d3.select("#visualization").html("");
+            // Draw Scene 1
+            drawScene1(null);
+          });
+
+        // Make the back button look like a real button
+        svg.selectAll(".back-button")
+          .style("cursor", "pointer")
+          .style("fill", "steelblue")
+          .style("text-decoration", "underline");
+    }
+
     </script>
 </body>
 </html>
