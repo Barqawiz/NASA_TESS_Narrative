@@ -23,3 +23,7 @@ Scene 2 provides a toolkit to delve into the attributes of individual planets. I
 Scene 3 brings an interactive dashboard that evolves the visualization based on your preferences for a tailored analytical insight.
 
 <img src="references/scene3_ahmadai.png" width="450em">
+
+
+# Explore Tools
+Explore more tools and interesting experiments in [Ahmadai.com](https://ahmadai.com/)
