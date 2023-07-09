@@ -255,7 +255,7 @@
                      tooltip.transition()
                          .duration(200)
                          .style("opacity", .9);
-                     tooltip.html("Equilibrium Temperature: " + d.pl_eqt + "<br/>Orbital Eccentricity: " + d.pl_orbeccen)
+                     tooltip.html("Palent Name: " + d.pl_name + "<br/>Equilibrium Temperature: " + d.pl_eqt + "<br/>Orbital Eccentricity: " + d.pl_orbeccen)
                          .style("left", (event.pageX) + "px")
                          .style("top", (event.pageY - 28) + "px");
                  })
@@ -367,7 +367,7 @@
                      tooltip.transition()
                          .duration(200)
                          .style("opacity", .9);
-                     tooltip.html("Stellar Mass: " + d.st_mass + "<br/>Stellar Radius: " + d.st_rad)
+                     tooltip.html("Palent Name: " + d.pl_name + "<br/>Stellar Mass: " + d.st_mass + "<br/>Stellar Radius: " + d.st_rad)
                          .style("left", (event.pageX) + "px")
                          .style("top", (event.pageY - 28) + "px");
                  })
@@ -567,7 +567,7 @@
                  var scaleMax = Math.max(row.earth.max, row.planet, row.earth.min)
                  barScale.domain([0, scaleMax]);
          
-                 var yPos = 60 * i + 100; // Adjust y position for each bar
+                 var yPos = 65 * i + 100; // Adjust y position for each bar
          
                  svg.append("text")
                      .attr("x", 10)
@@ -618,7 +618,7 @@
              // Add back button to go back to Scene 1
              svg.append("text")
                  .attr("x", 10)
-                 .attr("y", 620)
+                 .attr("y", 640)
                  .text("Back to Scene 1")
                  .attr("class", "back-button")
                  .on("click", function() {
@@ -638,7 +638,7 @@
                // Add button to go to Scene 3
                svg.append("text")
                    .attr("x", 160)
-                   .attr("y", 620) // adjust accordingly
+                   .attr("y", 640) // adjust accordingly
                    .text("Explore Interactive Dashboard")
                    .attr("class", "scene3-button")
                    .on("click", function() {
@@ -656,11 +656,11 @@
          
              // Adding a title
              svg.append("text")
-                 .attr("x", 10)
+                 .attr("x", 170)
                  .attr("y", 50)
                  .attr("text-anchor", "middle")
                  .style("font-size", "24px")
-                 .text("Comparison of Earth and Selected Planet Parameters");
+                 .text(planet.pl_name+" Palnet Parameters");
          
              // Adding a legend
              var legendData = [{
@@ -682,7 +682,7 @@
                  });
          
              var marginX = 340;
-             var marginY = 485;
+             var marginY = 500;
          
              legend.append("circle")
                  .attr("cx", marginX + 20)
@@ -1011,6 +1011,9 @@
              .style("cursor", "pointer")
              .style("fill", "steelblue")
              .style("text-decoration", "underline");
+
+           //draw default data
+           applyFilters()
          }
          
       </script>
