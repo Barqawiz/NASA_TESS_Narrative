@@ -1,7 +1,7 @@
 # NASA TESS Mission Narrative
  A narrative visualization project showcasing TESS's mission and exploring Earth-like exoplanets.
 
-<svg fill="none" viewBox="0 0 600 300" width="600" height="250" xmlns="http://www.w3.org/2000/svg">
+<svg fill="none" viewBox="0 0 600 300" width="450" height="250" xmlns="http://www.w3.org/2000/svg">
   <foreignObject width="100%" height="100%">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>
