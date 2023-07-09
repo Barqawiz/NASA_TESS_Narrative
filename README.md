@@ -1,7 +1,6 @@
 # NASA TESS Mission Narrative
  A narrative visualization project showcasing TESS's mission and exploring Earth-like exoplanets.
 
-<a href="https://barqawiz.github.io/NASA_TESS_Narrative/narrative_scenes.html">
 <svg fill="none" viewBox="0 0 600 300" width="600" height="300" xmlns="http://www.w3.org/2000/svg">
   <foreignObject width="100%" height="100%">
     <div xmlns="http://www.w3.org/1999/xhtml">
@@ -63,12 +62,14 @@
       </style>
 
       <div class="container">
+        <a href="https://barqawiz.github.io/NASA_TESS_Narrative/narrative_scenes.html">
         <h1>Click To Open the Narrative <div class="hi">👋</div></h1>
+        </a>
       </div>
     </div>
   </foreignObject>
 </svg>
-</a>
+
 
 # Martini Glass Structure
 ## Storyline:
