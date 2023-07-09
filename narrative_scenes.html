@@ -776,8 +776,9 @@
            .sliderHorizontal()
            .min(0)
            .max(5000)
-           .step(1)
-           .width(sliderWidth) // Adjusted slider width
+           .step(50)
+           .width(sliderWidth)
+           .ticks(5)
            .displayValue(false)
            .on('onchange', val => { tempValue = val; applyFilters(); });
          
@@ -919,6 +920,11 @@
            // Update the chart based on the filtered data
            drawChart(filteredData);
          }
+
+         // Tooltip
+         var tooltip = d3.select("body").append("div")
+                        .attr("class", "tooltip")
+                        .style("opacity", 0);
          
          // drawChart function goes here
          function drawChart(data) {
@@ -975,11 +981,6 @@
            var y = d3.scaleLinear()
              .domain(yRange)
              .range([height, 0]);
-           
-           // Tooltip
-           var tooltip = d3.select("body").append("div")
-                            .attr("class", "tooltip")
-                            .style("opacity", 0);
          
            var chart = svg.append("g")
              .attr("class", "chart")
@@ -1005,6 +1006,15 @@
                 tooltip.transition()
                          .duration(500)
                          .style("opacity", 0);
+            }).on("click", function(event, d) {
+                 // clean the tool tip
+                 tooltip.transition()
+                     .duration(500)
+                     .style("opacity", 0);
+                 // Clear the visualization
+                 d3.select("#visualization").html("");
+                 // Draw Scene 2
+                 drawScene2(d);
             });
          
            chart.append("g")
