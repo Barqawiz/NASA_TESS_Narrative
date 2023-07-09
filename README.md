@@ -29,7 +29,7 @@
         }
 
         .container {
-          background: linear-gradient(-45deg, #155799, #e73c7e, #23a6d5, #159957);
+          background: linear-gradient(-45deg, #ee7752, #e73c7e, #159957, #23d5ab);
           background-size: 400% 400%;
           animation: gradient 15s ease infinite;
 
@@ -48,9 +48,11 @@
           animation: hi 1.5s linear -0.5s infinite;
           display: inline-block;
           transform-origin: 70% 70%;
-          color:#FFF;
         }
+        .whiter{
 
+          color: #FFF;
+        }
         @media (prefers-reduced-motion) {
           .container {
             animation: none;
@@ -64,7 +66,7 @@
 
       <div class="container">
         <a href="https://barqawiz.github.io/NASA_TESS_Narrative/narrative_scenes.html">
-        <h1>Click To Open the Narrative <div class="hi">👋</div></h1>
+        <h1 class="whiter">Click To Open the Narrative <div class="hi">👋</div></h1>
         </a>
       </div>
     </div>
