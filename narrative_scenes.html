@@ -1,5 +1,5 @@
 <!-- MIT License
-Copyright (c) 2023 Albarqawi -->
+   Copyright (c) 2023 Albarqawi -->
 <!DOCTYPE html>
 <html>
    <head>
@@ -112,7 +112,7 @@ Copyright (c) 2023 Albarqawi -->
              // control animation logic
              var animate = initialLoad;
              initialLoad = false;
-
+         
              // Count discoveries per year
              var discoveriesPerYear = d3.rollup(data, v => v.length, d => d.disc_year);
              var countedData = Array.from(discoveriesPerYear, ([year, count]) => ({
@@ -123,7 +123,7 @@ Copyright (c) 2023 Albarqawi -->
              // Sort data by discovery year
              data.sort((a, b) => a.disc_year - b.disc_year);
             countedData.sort((a, b) => a.year - b.year );
-
+         
          
              // Prepare color scale
              var colorScale = d3.scaleSequential()
@@ -191,7 +191,7 @@ Copyright (c) 2023 Albarqawi -->
                      // Draw the updated charts
                      drawScene1(filteredData);
                  });
-
+         
              // Animate the bar drawing
              if (animate) {
                 rect.transition()
@@ -417,7 +417,7 @@ Copyright (c) 2023 Albarqawi -->
                      // Draw Scene 2
                      drawScene2(d);
                  });
-
+         
              // Animation the circles
             if (animate) {
                  circles2.transition()
@@ -980,7 +980,7 @@ Copyright (c) 2023 Albarqawi -->
            var tooltip = d3.select("body").append("div")
                             .attr("class", "tooltip")
                             .style("opacity", 0);
-
+         
            var chart = svg.append("g")
              .attr("class", "chart")
              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -1071,7 +1071,7 @@ Copyright (c) 2023 Albarqawi -->
              .style("cursor", "pointer")
              .style("fill", "steelblue")
              .style("text-decoration", "underline");
-
+         
            //draw default data
            applyFilters()
          }
