@@ -556,7 +556,7 @@
              // Create SVG for the visualization
              var svg = d3.select("#visualization").append("svg")
                  .attr("width", 800)
-                 .attr("height", 700);
+                 .attr("height", 680);
          
              var barHeight = 20;
              var barMaxWidth = 200;
@@ -618,7 +618,7 @@
              // Add back button to go back to Scene 1
              svg.append("text")
                  .attr("x", 10)
-                 .attr("y", 600)
+                 .attr("y", 620)
                  .text("Back to Scene 1")
                  .attr("class", "back-button")
                  .on("click", function() {
@@ -638,7 +638,7 @@
                // Add button to go to Scene 3
                svg.append("text")
                    .attr("x", 160)
-                   .attr("y", 600) // adjust accordingly
+                   .attr("y", 620) // adjust accordingly
                    .text("Explore Interactive Dashboard")
                    .attr("class", "scene3-button")
                    .on("click", function() {
