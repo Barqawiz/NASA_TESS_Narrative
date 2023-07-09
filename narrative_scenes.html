@@ -71,6 +71,7 @@
       <script>
          let data = null;
          let currentScene = null;
+         let initialLoad = true;
          
          function resetFilter(event) {
          
@@ -105,7 +106,11 @@
              }
          
              var filteredYear = filteredData.length < data.length ? filteredData[0].disc_year : null;
-         
+            
+             // control animation logic
+             var animate = initialLoad;
+             initialLoad = false;
+
              // Count discoveries per year
              var discoveriesPerYear = d3.rollup(data, v => v.length, d => d.disc_year);
              var countedData = Array.from(discoveriesPerYear, ([year, count]) => ({
@@ -115,6 +120,8 @@
          
              // Sort data by discovery year
              data.sort((a, b) => a.disc_year - b.disc_year);
+            countedData.sort((a, b) => a.year - b.year );
+
          
              // Prepare color scale
              var colorScale = d3.scaleSequential()
@@ -145,14 +152,14 @@
              var histogram = svg.append("g")
                  .attr("transform", "translate(50, 50)");
          
-             histogram.selectAll("rect")
+             var rect = histogram.selectAll("rect")
                  .data(countedData)
                  .enter()
                  .append("rect")
                  .attr("x", d => x(d.year))
                  .attr("width", x.bandwidth())
-                 .attr("y", d => y(d.count))
-                 .attr("height", d => histogramHeight - y(d.count))
+                 .attr("y", d => y(0) )
+                 .attr("height", d => 0)
                  .attr("fill", d => colorScale(d.year))
                  .classed("unfocused", d => d.year !== filteredYear && filteredYear != null)
                  .on("mouseover", function(event, d) {
@@ -182,6 +189,18 @@
                      // Draw the updated charts
                      drawScene1(filteredData);
                  });
+
+             // Animate the bar drawing
+             if (animate) {
+                rect.transition()
+                .duration(1000)
+                .delay((d, i) => 400 * (d.year - 2018))
+                .attr("y", d => y(d.count))
+                .attr("height", d => histogramHeight - y(d.count))
+            } else {
+                rect.attr("y", d => y(d.count))
+                    .attr("height", d => histogramHeight - y(d.count))
+            }
          
              histogram.append("g")
                  .attr("transform", "translate(0, " + histogramHeight + ")")
@@ -230,12 +249,12 @@
              var scatter = svg.append("g")
                  .attr("transform", "translate(" + (histogramWidth + 200) + ", 50)");
          
-             scatter.selectAll("circle")
+              var circles1 =scatter.selectAll("circle")
                  .data(filteredData)
                  .enter().append("circle")
                  .attr("cx", d => xScatter(d.pl_eqt))
                  .attr("cy", d => yScatter(d.pl_orbeccen))
-                 .attr("r", 5)
+                 .attr("r", 0)
                  .attr("fill", (d) => colorScale(d.disc_year))
                  .attr("stroke", (d) => {
                      if (d.pl_eqt >= 273.15 && d.pl_eqt <= 373.15 && d.pl_orbeccen >= 0 && d.pl_orbeccen <= 0.2) {
@@ -274,6 +293,16 @@
                      // Draw Scene 2
                      drawScene2(d);
                  });
+            
+            // Animation the circles
+            if (animate) {
+                 circles1.transition()
+                     .duration(1000)
+                     .delay((d, i) => 500 * (Number(d.disc_year) - 2018))
+                     .attr("r", 5);
+             } else {
+                 circles1.attr("r", 5);
+             }
          
              scatter.append("g")
                  .attr("transform", "translate(0, " + scatterHeight + ")")
@@ -341,12 +370,12 @@
              var scatter2 = svg.append("g")
                  .attr("transform", "translate(" + (histogramWidth / 2) + ", " + scatter2Y + ")");
          
-             scatter2.selectAll("circle")
+             var circles2 = scatter2.selectAll("circle")
                  .data(filteredData)
                  .enter().append("circle")
                  .attr("cx", d => xScatter2(d.st_mass))
                  .attr("cy", d => yScatter2(d.st_rad))
-                 .attr("r", 5)
+                 .attr("r", 0)
                  .attr("fill", (d) => colorScale(d.disc_year))
                  .attr("stroke", (d) => {
                      if (d.st_mass >= 0.8 && d.st_mass <= 1.2 && d.st_rad >= 0.8 && d.st_rad <= 1.2) {
@@ -386,6 +415,16 @@
                      // Draw Scene 2
                      drawScene2(d);
                  });
+
+             // Animation the circles
+            if (animate) {
+                 circles2.transition()
+                     .duration(1000)
+                     .delay((d, i) => 500 * (Number(d.disc_year) - 2018))
+                     .attr("r", 5);
+             } else {
+                 circles2.attr("r", 5);
+             }
          
              scatter2.append("g")
                  .attr("transform", "translate(0, " + scatter2Height + ")")
@@ -934,11 +973,16 @@
            var y = d3.scaleLinear()
              .domain(yRange)
              .range([height, 0]);
-         
+           
+           // Tooltip
+           var tooltip = d3.select("body").append("div")
+                            .attr("class", "tooltip")
+                            .style("opacity", 0);
+
            var chart = svg.append("g")
              .attr("class", "chart")
              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-         
+           
            chart.selectAll("circle")
              .data(data)
              .enter()
@@ -946,7 +990,20 @@
              .attr("cx", d => x(d[selectedXAxis]))
              .attr("cy", d => y(d[selectedYAxis]))
              .attr("r", 3)
-             .style("fill", d => colorScale(d.disc_year));
+             .style("fill", d => colorScale(d.disc_year))
+             .on("mouseover", function(event, d) {
+                tooltip.transition()
+                         .duration(200)
+                         .style("opacity", .9);
+                tooltip.html("Palent Name: " + d.pl_name)
+                         .style("left", (event.pageX) + "px")
+                         .style("top", (event.pageY - 28) + "px");
+            })
+            .on("mouseout", function(d) {
+                tooltip.transition()
+                         .duration(500)
+                         .style("opacity", 0);
+            });
          
            chart.append("g")
              .attr("transform", "translate(0," + height + ")")
@@ -1000,6 +1057,7 @@
              .text("Back to Scene 1")
              .attr("class", "back-button")
              .on("click", function () {
+               
                // Clear the visualization
                d3.select("#visualization").html("");
                // Draw Scene 1
