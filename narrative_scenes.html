@@ -301,7 +301,7 @@
           scatter.append("text")
               .attr("x", scatterWidth / 2)
               .attr("y", -30)
-              .text("Scatter Plot of Exoplanets")
+              .text("Orbital Eccentricity vs Equilibrium Temp")
               .style("text-anchor", "middle")
               .style("font-size", "20px");
 
@@ -413,7 +413,7 @@
           scatter2.append("text")
               .attr("x", scatter2Width / 2)
               .attr("y", -30)
-              .text("Scatter Plot of Stellar Mass vs Radius")
+              .text("Host Start - Stellar Radius vs Stellar Mass")
               .style("text-anchor", "middle")
               .style("font-size", "20px");
 
@@ -659,6 +659,10 @@
               .text(function(d) {
                   return d.text;
               });
+      }
+
+      function drawScene3() {
+
       }
     </script>
 </body>
