@@ -51,7 +51,7 @@
         }
         .whiter{
 
-          color: #FFF;
+          color: #FFF !important;
         }
         @media (prefers-reduced-motion) {
           .container {
