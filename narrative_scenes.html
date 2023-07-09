@@ -33,146 +33,149 @@
 <body>
     <div id="visualization"></div>
     <script>
-        let data = null;
-        let currentScene = null;
+      let data = null;
+      let currentScene = null;
 
-        function resetFilter(event) {
+      function resetFilter(event) {
 
           var clickedElement = event.target;
           if (!clickedElement.closest("rect")) {
-            if (currentScene == "s1") {
-              // Clear the visualization
-              d3.select("#visualization").html("");
-              // Draw Scene 1
-              drawScene1(null);
-            }
+              if (currentScene == "s1") {
+                  // Clear the visualization
+                  d3.select("#visualization").html("");
+                  // Draw Scene 1
+                  drawScene1(null);
+              }
           }
-          
-        }
 
-        // Load the data
-        d3.csv("data/tess_confirmed_plannets.csv").then(function(myData) {
-            data = myData;
+      }
 
-            // Scene 1: Overview
-            drawScene1(null);
-        });
+      // Load the data
+      d3.csv("data/tess_confirmed_plannets.csv").then(function(myData) {
+          data = myData;
 
-        function drawScene1(filteredData) {
-          
+          // Scene 1: Overview
+          drawScene1(null);
+      });
+
+      function drawScene1(filteredData) {
+
           // set the current scene
           currentScene = "s1";
 
           // contorl filtered data
           if (!filteredData) {
-            filteredData = data;
+              filteredData = data;
           }
 
           var filteredYear = filteredData.length < data.length ? filteredData[0].disc_year : null;
 
           // Count discoveries per year
           var discoveriesPerYear = d3.rollup(data, v => v.length, d => d.disc_year);
-          var countedData = Array.from(discoveriesPerYear, ([year, count]) => ({ year, count }));
+          var countedData = Array.from(discoveriesPerYear, ([year, count]) => ({
+              year,
+              count
+          }));
 
           // Sort data by discovery year
           data.sort((a, b) => a.disc_year - b.disc_year);
 
           // Prepare color scale
           var colorScale = d3.scaleSequential()
-            .domain([2018, 2023])
-            .interpolator(d3.interpolateOranges);
+              .domain([2018, 2023])
+              .interpolator(d3.interpolateOranges);
 
           // Create SVG for the visualization
           var svg = d3.select("#visualization").append("svg")
-            .attr("width", 1800)
-            .attr("height", 600);
+              .attr("width", 1800)
+              .attr("height", 600);
 
           // reset the filter
-          svg.on("click", resetFilter); 
+          svg.on("click", resetFilter);
 
           // Histogram
           var histogramWidth = 400;
           var histogramHeight = 300;
 
           var x = d3.scaleBand()
-            .domain(data.map(d => d.disc_year))
-            .range([0, histogramWidth])
-            .padding(0.1);
+              .domain(data.map(d => d.disc_year))
+              .range([0, histogramWidth])
+              .padding(0.1);
 
           var y = d3.scaleLinear()
-            .domain([0, d3.max(countedData, d => +d.count)])
-            .range([histogramHeight, 0]);
+              .domain([0, d3.max(countedData, d => +d.count)])
+              .range([histogramHeight, 0]);
 
           var histogram = svg.append("g")
-            .attr("transform", "translate(50, 50)");
+              .attr("transform", "translate(50, 50)");
 
           histogram.selectAll("rect")
-            .data(countedData)
-            .enter()
-            .append("rect")
-            .attr("x", d => x(d.year))
-            .attr("width", x.bandwidth())
-            .attr("y", d => y(d.count))
-            .attr("height", d => histogramHeight - y(d.count))
-            .attr("fill", d => colorScale(d.year))
-            .classed("unfocused", d => d.year !== filteredYear && filteredYear != null)
-            .on("mouseover", function (event, d) {
-              tooltip.transition()
-                .duration(200)
-                .style("opacity", .9);
-              tooltip.html("Year: " + d.disc_year + "<br/>Number of Exoplanets: " + d.count)
-                .style("left", (event.pageX) + "px")
-                .style("top", (event.pageY - 28) + "px");
-            })
-            .on("mouseout", function (d) {
-              tooltip.transition()
-                .duration(500)
-                .style("opacity", 0);
-            }).on("click", function(event, d) {
+              .data(countedData)
+              .enter()
+              .append("rect")
+              .attr("x", d => x(d.year))
+              .attr("width", x.bandwidth())
+              .attr("y", d => y(d.count))
+              .attr("height", d => histogramHeight - y(d.count))
+              .attr("fill", d => colorScale(d.year))
+              .classed("unfocused", d => d.year !== filteredYear && filteredYear != null)
+              .on("mouseover", function(event, d) {
+                  tooltip.transition()
+                      .duration(200)
+                      .style("opacity", .9);
+                  tooltip.html("Year: " + d.disc_year + "<br/>Number of Exoplanets: " + d.count)
+                      .style("left", (event.pageX) + "px")
+                      .style("top", (event.pageY - 28) + "px");
+              })
+              .on("mouseout", function(d) {
+                  tooltip.transition()
+                      .duration(500)
+                      .style("opacity", 0);
+              }).on("click", function(event, d) {
 
-              // clean the tool tip
-                tooltip.transition()
-                .duration(500)
-                .style("opacity", 0);
-              // Filter the data based on the selected year
-              filteredData = data.filter(p => p.disc_year === d.year); 
-            
-              // Clear the visualization
-              d3.select("#visualization").html("");
+                  // clean the tool tip
+                  tooltip.transition()
+                      .duration(500)
+                      .style("opacity", 0);
+                  // Filter the data based on the selected year
+                  filteredData = data.filter(p => p.disc_year === d.year);
 
-              // Draw the updated charts
-              drawScene1(filteredData); 
-          });
+                  // Clear the visualization
+                  d3.select("#visualization").html("");
 
-          histogram.append("g")
-            .attr("transform", "translate(0, " + histogramHeight + ")")
-            .call(d3.axisBottom(x))
-            .selectAll("text")
-            .attr("transform", "rotate(-45)")
-            .style("text-anchor", "end");
+                  // Draw the updated charts
+                  drawScene1(filteredData);
+              });
 
           histogram.append("g")
-            .call(d3.axisLeft(y));
+              .attr("transform", "translate(0, " + histogramHeight + ")")
+              .call(d3.axisBottom(x))
+              .selectAll("text")
+              .attr("transform", "rotate(-45)")
+              .style("text-anchor", "end");
+
+          histogram.append("g")
+              .call(d3.axisLeft(y));
 
           histogram.append("text")
-            .attr("x", histogramWidth / 2)
-            .attr("y", histogramHeight + 40)
-            .text("Discovery Year")
-            .style("text-anchor", "middle");
+              .attr("x", histogramWidth / 2)
+              .attr("y", histogramHeight + 40)
+              .text("Discovery Year")
+              .style("text-anchor", "middle");
 
           histogram.append("text")
-            .attr("x", -histogramHeight / 2)
-            .attr("y", -30)
-            .text("Number of Exoplanets")
-            .style("text-anchor", "middle")
-            .attr("transform", "rotate(-90)");
+              .attr("x", -histogramHeight / 2)
+              .attr("y", -30)
+              .text("Number of Exoplanets")
+              .style("text-anchor", "middle")
+              .attr("transform", "rotate(-90)");
 
           histogram.append("text")
-            .attr("x", histogramWidth / 2)
-            .attr("y", -10)
-            .text("Histogram of Exoplanet Discoveries by Year")
-            .style("text-anchor", "middle")
-            .style("font-size", "20px");
+              .attr("x", histogramWidth / 2)
+              .attr("y", -10)
+              .text("Histogram of Exoplanet Discoveries by Year")
+              .style("text-anchor", "middle")
+              .style("font-size", "20px");
 
 
 
@@ -181,195 +184,267 @@
           var scatterHeight = 300;
 
           var xScatter = d3.scaleLinear()
-            .domain([d3.min(data, d => +d.pl_eqt), d3.max(data, d => +d.pl_eqt)])
-            .range([0, scatterWidth]);
+              .domain([d3.min(data, d => +d.pl_eqt), d3.max(data, d => +d.pl_eqt)])
+              .range([0, scatterWidth]);
 
           var yScatter = d3.scaleLinear()
-            .domain([d3.min(data, d => +d.pl_orbeccen), d3.max(data, d => +d.pl_orbeccen)])
-            .range([scatterHeight, 0]);
+              .domain([d3.min(data, d => +d.pl_orbeccen), d3.max(data, d => +d.pl_orbeccen)])
+              .range([scatterHeight, 0]);
 
           var scatter = svg.append("g")
-            .attr("transform", "translate(" + (histogramWidth + 200) + ", 50)");
+              .attr("transform", "translate(" + (histogramWidth + 200) + ", 50)");
 
           scatter.selectAll("circle")
-            .data(filteredData)
-            .enter().append("circle")
-            .attr("cx", d => xScatter(d.pl_eqt))
-            .attr("cy", d => yScatter(d.pl_orbeccen))
-            .attr("r", 5)
-            .attr("fill", (d) => colorScale(d.disc_year))
-            .attr("stroke", (d) => {
-              if (d.pl_eqt >= 273.15 && d.pl_eqt <= 373.15 && d.pl_orbeccen >= 0 && d.pl_orbeccen <= 0.2) {
-                return "black";
-              } else {
-                return null;
-              }
-            })
-            .attr("stroke-width", (d) => {
-              if (d.pl_eqt >= 273.15 && d.pl_eqt <= 373.15 && d.pl_orbeccen >= 0 && d.pl_orbeccen <= 0.2) {
-                return 1.5;
-              } else {
-                return 0;
-              }
-            })
-            .on("mouseover", function (event, d) {
-              tooltip.transition()
-                .duration(200)
-                .style("opacity", .9);
-              tooltip.html("Equilibrium Temperature: " + d.pl_eqt + "<br/>Orbital Eccentricity: " + d.pl_orbeccen)
-                .style("left", (event.pageX) + "px")
-                .style("top", (event.pageY - 28) + "px");
-            })
-            .on("mouseout", function (d) {
-              tooltip.transition()
-                .duration(500)
-                .style("opacity", 0);
-            })
-            .on("click", function (event, d) {
-               // clean the tool tip
-                tooltip.transition()
-                .duration(500)
-                .style("opacity", 0);
-              // Clear the visualization
-              d3.select("#visualization").html("");
-              // Draw Scene 2
-              drawScene2(d);
-            });
+              .data(filteredData)
+              .enter().append("circle")
+              .attr("cx", d => xScatter(d.pl_eqt))
+              .attr("cy", d => yScatter(d.pl_orbeccen))
+              .attr("r", 5)
+              .attr("fill", (d) => colorScale(d.disc_year))
+              .attr("stroke", (d) => {
+                  if (d.pl_eqt >= 273.15 && d.pl_eqt <= 373.15 && d.pl_orbeccen >= 0 && d.pl_orbeccen <= 0.2) {
+                      return "black";
+                  } else {
+                      return null;
+                  }
+              })
+              .attr("stroke-width", (d) => {
+                  if (d.pl_eqt >= 273.15 && d.pl_eqt <= 373.15 && d.pl_orbeccen >= 0 && d.pl_orbeccen <= 0.2) {
+                      return 1.5;
+                  } else {
+                      return 0;
+                  }
+              })
+              .on("mouseover", function(event, d) {
+                  tooltip.transition()
+                      .duration(200)
+                      .style("opacity", .9);
+                  tooltip.html("Equilibrium Temperature: " + d.pl_eqt + "<br/>Orbital Eccentricity: " + d.pl_orbeccen)
+                      .style("left", (event.pageX) + "px")
+                      .style("top", (event.pageY - 28) + "px");
+              })
+              .on("mouseout", function(d) {
+                  tooltip.transition()
+                      .duration(500)
+                      .style("opacity", 0);
+              })
+              .on("click", function(event, d) {
+                  // clean the tool tip
+                  tooltip.transition()
+                      .duration(500)
+                      .style("opacity", 0);
+                  // Clear the visualization
+                  d3.select("#visualization").html("");
+                  // Draw Scene 2
+                  drawScene2(d);
+              });
 
           scatter.append("g")
-            .attr("transform", "translate(0, " + scatterHeight + ")")
-            .call(d3.axisBottom(xScatter));
+              .attr("transform", "translate(0, " + scatterHeight + ")")
+              .call(d3.axisBottom(xScatter));
 
           scatter.append("g")
-            .call(d3.axisLeft(yScatter));
+              .call(d3.axisLeft(yScatter));
 
           scatter.append("text")
-            .attr("x", scatterWidth / 2)
-            .attr("y", scatterHeight + 40)
-            .text("Equilibrium Temperature")
-            .style("text-anchor", "middle");
+              .attr("x", scatterWidth / 2)
+              .attr("y", scatterHeight + 40)
+              .text("Equilibrium Temperature")
+              .style("text-anchor", "middle");
 
           scatter.append("text")
-            .attr("x", -scatterHeight / 2)
-            .attr("y", -30)
-            .text("Orbital Eccentricity")
-            .style("text-anchor", "middle")
-            .attr("transform", "rotate(-90)");
+              .attr("x", -scatterHeight / 2)
+              .attr("y", -30)
+              .text("Orbital Eccentricity")
+              .style("text-anchor", "middle")
+              .attr("transform", "rotate(-90)");
 
           scatter.append("text")
-            .attr("x", scatterWidth / 2)
-            .attr("y", -10)
-            .text("Scatter Plot of Exoplanets")
-            .style("text-anchor", "middle")
-            .style("font-size", "20px");
+              .attr("x", scatterWidth / 2)
+              .attr("y", -10)
+              .text("Scatter Plot of Exoplanets")
+              .style("text-anchor", "middle")
+              .style("font-size", "20px");
 
           // Legend
           var legend = svg.append("g")
-            .attr("class", "legend")
-            .attr("transform", "translate(1400, 50)");
+              .attr("class", "legend")
+              .attr("transform", "translate(1400, 50)");
 
           var legendData = Array.from(new Set(data.map(d => d.disc_year)));
 
           var legendItem = legend.selectAll(".legend-item")
-            .data(legendData)
-            .enter().append("g")
-            .attr("class", "legend-item")
-            .attr("transform", (d, i) => "translate(0, " + (i * 20) + ")");
+              .data(legendData)
+              .enter().append("g")
+              .attr("class", "legend-item")
+              .attr("transform", (d, i) => "translate(0, " + (i * 20) + ")");
 
           legendItem.append("circle")
-            .attr("cx", 5)
-            .attr("cy", 5)
-            .attr("r", 5)
-            .attr("fill", colorScale);
+              .attr("cx", 5)
+              .attr("cy", 5)
+              .attr("r", 5)
+              .attr("fill", colorScale);
 
           legendItem.append("text")
-            .attr("x", 15)
-            .attr("y", 5)
-            .attr("dy", "0.35em")
-            .text(d => d);
+              .attr("x", 15)
+              .attr("y", 5)
+              .attr("dy", "0.35em")
+              .text(d => d);
 
           legend.attr("transform", "translate(" + (histogramWidth + 700) + ", 50)");
 
-          
+
 
           // Tooltip
           var tooltip = d3.select("body").append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
+              .attr("class", "tooltip")
+              .style("opacity", 0);
 
-         // Annotations
+          // Annotations
           var annotations = [{
-            note: { label: "Potential Habitable Zone", align: "left" },
-            x: xScatter(350), // Adjusted x position for annotation
-            y: yScatter(0.05), // Adjusted y position for annotation
-            dx: 200,
-            dy: -50,
-            subject: { radius: 30 },
-            type: d3.annotationCalloutCircle
+              note: {
+                  label: "Potential Habitable Zone",
+                  align: "left"
+              },
+              x: xScatter(350), // Adjusted x position for annotation
+              y: yScatter(0.05), // Adjusted y position for annotation
+              dx: 200,
+              dy: -50,
+              subject: {
+                  radius: 30
+              },
+              type: d3.annotationCalloutCircle
           }];
 
           var makeAnnotations = d3.annotation()
-            .annotations(annotations);
+              .annotations(annotations);
 
           scatter.append("g")
-            .attr("class", "annotation-group")
-            .call(makeAnnotations);
-        }
+              .attr("class", "annotation-group")
+              .call(makeAnnotations);
+      }
 
-        function drawScene2(planet) {
+      function drawScene2(planet) {
           // set the current scene
           currentScene = "s2";
+
+          // Comparison data
+          var comparisonData = [{
+                  parameter: 'Equilibrium Temperature',
+                  earth: {
+                      min: 273.15,
+                      max: 373.15
+                  },
+                  planet: +planet.pl_eqt
+              },
+              {
+                  parameter: 'Orbital Semi-Major Axis (AU)',
+                  earth: {
+                      min: 0.9,
+                      max: 1.5
+                  },
+                  planet: +planet.pl_orbsmax
+              },
+              {
+                  parameter: 'Planet Radius (Jupiter Radii)',
+                  earth: {
+                      min: 0.0892,
+                      max: 0.1427
+                  },
+                  planet: +planet.pl_radj
+              },
+              {
+                  parameter: 'Orbital Eccentricity',
+                  earth: {
+                      min: 0,
+                      max: 0.2
+                  },
+                  planet: +planet.pl_orbeccen
+              },
+              {
+                  parameter: 'Stellar Radius (Solar Rad.)',
+                  earth: {
+                      min: 1,
+                      max: 1
+                  },
+                  planet: +planet.st_rad
+              },
+              {
+                  parameter: 'Stellar Mass (Solar Mass)',
+                  earth: {
+                      min: 1,
+                      max: 1
+                  },
+                  planet: +planet.st_mass
+              }
+          ];
 
           // Create SVG for the visualization
           var svg = d3.select("#visualization").append("svg")
               .attr("width", 800)
-              .attr("height", 600);
+              .attr("height", 700);
 
-          // Display detailed information about the selected planet
+          var barHeight = 20;
+          var barMaxWidth = 200;
+          var barScale = d3.scaleLinear().range([0, barMaxWidth]);
+
+          comparisonData.forEach(function(row, i) {
+              // Define the scale for the parameter
+              var scaleMax = Math.max(row.earth.max, row.planet, row.earth.min)
+              barScale.domain([0, scaleMax]);
+
+              var yPos = 60 * i + 100; // Adjust y position for each bar
+
+              svg.append("text")
+                  .attr("x", 10)
+                  .attr("y", yPos)
+                  .text(row.parameter)
+                  .style("font-size", "14px");
+              
+              var earthLabel = "Earth: ";
+              if (row.parameter.includes("Solar")) {
+                var earthLabel = "Host Star: ";
+              }
+
+              svg.append("text")
+                  .attr("x", 10)
+                  .attr("y", yPos + 20)
+                  .text(earthLabel + row.earth.min + " - " + row.earth.max)
+                  .style("font-size", "10px");
+
+              svg.append("text")
+                  .attr("x", 10)
+                  .attr("y", yPos + 35)
+                  .text("Selected Planet: " + row.planet.toFixed(2))
+                  .style("font-size", "10px");
+
+              // Draw Earth's optimal range bar
+              svg.append("rect")
+                  .attr("x", 300 + barScale(row.earth.min))
+                  .attr("y", yPos)
+                  .attr("width", barScale((row.earth.max - row.earth.min) === 0 ? 0.01 : (row.earth.max - row.earth.min)))
+                  .attr("height", barHeight)
+                  .attr("fill", "steelblue");
+
+              // Draw circle for the planet's value
+              svg.append("circle")
+                  .attr("cx", 300 + barScale(row.planet))
+                  .attr("cy", yPos + barHeight / 2)
+                  .attr("r", 5)
+                  .attr("fill", "orange");
+
+              // Draw x-axis for reference
+              var xAxis = d3.axisBottom(barScale).ticks(5);
+              svg.append("g")
+                  .attr("transform", "translate(300," + (yPos + barHeight + 10) + ")")
+                  .call(xAxis)
+                  .attr("font-size", "10px");
+          });
+
+          // Add back button to go back to Scene 1
           svg.append("text")
               .attr("x", 10)
-              .attr("y", 20)
-              .text("Planet Name: " + planet.pl_name);
-
-          svg.append("text")
-              .attr("x", 10)
-              .attr("y", 40)
-              .text("Equilibrium Temperature: " + planet.pl_eqt);
-
-          svg.append("text")
-              .attr("x", 10)
-              .attr("y", 60)
-              .text("Orbital Eccentricity: " + planet.pl_orbeccen);
-
-          svg.append("text")
-              .attr("x", 10)
-              .attr("y", 80)
-              .text("Orbit Semi-Major Axis: " + planet.pl_orbsmax);
-
-          svg.append("text")
-              .attr("x", 10)
-              .attr("y", 100)
-              .text("Planet Radius: " + (planet.pl_rade ? planet.pl_rade + " Earth radii" : planet.pl_radj + " Jupiter radii"));
-
-          svg.append("text")
-              .attr("x", 10)
-              .attr("y", 120)
-              .text("Stellar Effective Temperature: " + planet.st_teff);
-
-          svg.append("text")
-              .attr("x", 10)
-              .attr("y", 140)
-              .text("Stellar Radius: " + planet.st_rad + " Solar radii");
-
-          svg.append("text")
-              .attr("x", 10)
-              .attr("y", 160)
-              .text("Stellar Mass: " + planet.st_mass + " Solar mass");
-
-          // Add Back button to go back to Scene 1
-          svg.append("text")
-              .attr("x", 10)
-              .attr("y", 180)
+              .attr("y", 600)
               .text("Back to Scene 1")
               .attr("class", "back-button")
               .on("click", function() {
@@ -384,7 +459,54 @@
               .style("cursor", "pointer")
               .style("fill", "steelblue")
               .style("text-decoration", "underline");
-        }
+
+          // Adding a title
+          svg.append("text")
+              .attr("x", 10)
+              .attr("y", 50)
+              .attr("text-anchor", "middle")
+              .style("font-size", "24px")
+              .text("Comparison of Earth and Selected Planet Parameters");
+
+          // Adding a legend
+          var legendData = [{
+                  color: "steelblue",
+                  text: "Earth's Range"
+              },
+              {
+                  color: "orange",
+                  text: "Selected Planet's Value"
+              }
+          ];
+
+          var legend = svg.selectAll(".legend")
+              .data(legendData)
+              .enter().append("g")
+              .attr("class", "legend")
+              .attr("transform", function(d, i) {
+                  return "translate(0, " + (20 * i) + ")";
+              });
+
+          var marginX = 350;
+          var marginY = 550;
+
+          legend.append("circle")
+              .attr("cx", marginX + 20)
+              .attr("cy", marginY + 20)
+              .attr("r", 5)
+              .style("fill", function(d) {
+                  return d.color;
+              });
+
+          legend.append("text")
+              .attr("x", marginX + 30)
+              .attr("y", marginY + 20)
+              .attr("dy", ".35em")
+              .style("text-anchor", "start")
+              .text(function(d) {
+                  return d.text;
+              });
+      }
     </script>
 </body>
 </html>
