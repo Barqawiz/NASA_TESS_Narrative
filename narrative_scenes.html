@@ -233,7 +233,7 @@
               // Clear the visualization
               d3.select("#visualization").html("");
               // Draw Scene 2
-              drawScene2(d, data);
+              drawScene2(d);
             });
 
           scatter.append("g")
@@ -316,45 +316,75 @@
             .call(makeAnnotations);
         }
 
-        function drawScene2(planet, data) {
+        function drawScene2(planet) {
+  // set the current scene
+  currentScene = "s2";
 
-            // set the current scene
-            currentScene = "s2";
+  // Create SVG for the visualization
+  var svg = d3.select("#visualization").append("svg")
+      .attr("width", 800)
+      .attr("height", 600);
 
-            // Create SVG for the visualization
-            var svg = d3.select("#visualization").append("svg")
-                .attr("width", 800)
-                .attr("height", 600);
+  // Display detailed information about the selected planet
+  svg.append("text")
+      .attr("x", 10)
+      .attr("y", 20)
+      .text("Planet Name: " + planet.pl_name);
 
-            // Display detailed information about the selected planet
-            svg.append("text")
-                .attr("x", 10)
-                .attr("y", 20)
-                .text("Planet Name: " + planet.pl_name);
+  svg.append("text")
+      .attr("x", 10)
+      .attr("y", 40)
+      .text("Equilibrium Temperature: " + planet.pl_eqt);
 
-            svg.append("text")
-                .attr("x", 10)
-                .attr("y", 40)
-                .text("Equilibrium Temperature: " + planet.pl_eqt);
+  svg.append("text")
+      .attr("x", 10)
+      .attr("y", 60)
+      .text("Orbital Eccentricity: " + planet.pl_orbeccen);
 
-            svg.append("text")
-                .attr("x", 10)
-                .attr("y", 60)
-                .text("Orbital Eccentricity: " + planet.pl_orbeccen);
+  svg.append("text")
+      .attr("x", 10)
+      .attr("y", 80)
+      .text("Orbit Semi-Major Axis: " + planet.pl_orbsmax);
 
-            // Add Back button to go back to Scene 1
-            svg.append("text")
-                .attr("x", 10)
-                .attr("y", 80)
-                .text("Back to Scene 1")
-                .style("cursor", "pointer")
-                .on("click", function() {
-                    // Clear the visualization
-                    d3.select("#visualization").html("");
-                    // Draw Scene 1
-                    drawScene1(null);
-                });
-        }
+  svg.append("text")
+      .attr("x", 10)
+      .attr("y", 100)
+      .text("Planet Radius: " + (planet.pl_rade ? planet.pl_rade + " Earth radii" : planet.pl_radj + " Jupiter radii"));
+
+  svg.append("text")
+      .attr("x", 10)
+      .attr("y", 120)
+      .text("Stellar Effective Temperature: " + planet.st_teff);
+
+  svg.append("text")
+      .attr("x", 10)
+      .attr("y", 140)
+      .text("Stellar Radius: " + planet.st_rad + " Solar radii");
+
+  svg.append("text")
+      .attr("x", 10)
+      .attr("y", 160)
+      .text("Stellar Mass: " + planet.st_mass + " Solar mass");
+
+  // Add Back button to go back to Scene 1
+  svg.append("text")
+      .attr("x", 10)
+      .attr("y", 180)
+      .text("Back to Scene 1")
+      .attr("class", "back-button")
+      .on("click", function() {
+          // Clear the visualization
+          d3.select("#visualization").html("");
+          // Draw Scene 1
+          drawScene1(null);
+      });
+
+  // Make the back button look like a real button
+  svg.selectAll(".back-button")
+      .style("cursor", "pointer")
+      .style("fill", "steelblue")
+      .style("text-decoration", "underline");
+}
     </script>
 </body>
 </html>
