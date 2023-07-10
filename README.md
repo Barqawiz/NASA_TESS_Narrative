@@ -1,6 +1,10 @@
 # NASA TESS Mission Narrative
  A narrative visualization project showcasing TESS's mission and exploring Earth-like exoplanets.
 
+<a href="https://barqawiz.github.io/NASA_TESS_Narrative/narrative_scenes.html">
+Open the Narrative
+</a>
+
 # Martini Glass Structure
 ## Storyline:
 - Scene 1 : Overview of exoplanets discovered by TESS by years. The user can get to the next scene by clicking on a specific planet in the scatter plot.
