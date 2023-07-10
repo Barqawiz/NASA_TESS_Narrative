@@ -66,7 +66,7 @@
 
       <div class="container">
         <a href="https://barqawiz.github.io/NASA_TESS_Narrative/narrative_scenes.html">
-        <h1 class="whiter">Click To Open the Narrative <div class="hi">👋</div></h1>
+        <h1 class="whiter">Click To Open The Narrative <div class="hi">👋</div></h1>
         </a>
       </div>
     </div>
