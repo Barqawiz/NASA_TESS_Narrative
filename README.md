@@ -1,5 +1,9 @@
 # NASA TESS Mission Narrative
- A narrative visualization project showcasing TESS's mission and exploring Earth-like exoplanets.
+A narrative visualization project showcasing TESS's mission and exploring Earth-like exoplanets.
+
+The NASA TESS (Transiting Exoplanet Survey Satellite) mission is a space telescope launched by NASA in 2018 with the primary goal of searching for exoplanets. TESS's mission objective is to discover and study planets outside our solar system and find Earth-sized and potentially habitable planets.
+
+This tool allows users to interactively explore the data collected by TESS and compare the properties of these exoplanets with those of Earth with flexible control levels.
 
 <a href="https://barqawiz.github.io/NASA_TESS_Narrative/narrative_scenes.html">
 Open the Narrative
