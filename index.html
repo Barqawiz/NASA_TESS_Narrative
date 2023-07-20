@@ -1,0 +1,56 @@
+<!-- MIT License
+   Copyright (c) 2023 Albarqawi -->
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>TESS Exoplanet Visualization</title>
+      <script src="https://d3js.org/d3.v7.min.js"></script>
+      <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
+      <script src="js/d3-annotation.min.js"></script>
+      <script src="js/d3-simple-slider.min.js"></script>
+      <!-- html container style -->
+      
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+      <link rel="stylesheet" type="text/css" href="styler.css">
+      <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+   </head>
+   <body>
+      <h1>NASA TESS Exoplanet Mission</h1>
+      <p class="mt-3">The Transiting Exoplanet Survey Satellite (TESS) represents the upcoming phase in exploring planets beyond our solar system, inclusive of those potentially capable of fostering life. <button class="button-4" data-toggle="modal" data-target="#howModal">How to</button>  </p>
+      
+      <div id="visualization" class="visualization"></div>
+      
+      <script src="js/narrative.js"></script>
+
+      <!-- how to modal -->
+      <div class="modal fade" id="howModal">
+          <div class="modal-dialog modal-dialog-scrollable">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h4 class="modal-title">How to use the narrative</h4>
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  </div>
+                  <div class="modal-body">
+                    <!-- how to content -->
+                    <p><img src="images/module-silver.webp" class="logo-image"/></p>
+
+                    <p class="mt-5">This tool allows users to interactively explore the data collected by TESS and compare the properties of these exoplanets with those of Earth with flexible control levels.</p>
+                    
+                    <p class="mt-3">Storyline:</p>
+                    <ul>
+                        <li><b>Scene 1</b> : Overview of exoplanets discovered by TESS by years. The user can get to the next scene by clicking on a specific planet in the scatter plot.</li>
+                        <li><b>Scene 2</b> : Detailed view of the selected exoplanets characteristics comparing it with earth.</li>
+                        <li><b>Scene 3</b> : Interactive exploration scene where the user can filter or search planets based on their characteristics.</li>
+                    </ul>
+                 </div>
+                  
+              </div>
+          </div>
+      </div>
+
+      <!-- bootstrap - for how to section -->
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"></script>
+
+   </body>
+</html>
