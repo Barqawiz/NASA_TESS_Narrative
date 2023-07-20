@@ -5,7 +5,7 @@ The NASA TESS (Transiting Exoplanet Survey Satellite) mission is a space telesco
 
 This tool allows users to interactively explore the data collected by TESS and compare the properties of these exoplanets with those of Earth with flexible control levels.
 
-<a href="https://barqawiz.github.io/NASA_TESS_Narrative/narrative_scenes.html">
+<a href="https://barqawiz.github.io/NASA_TESS_Narrative">
 Open the Narrative
 </a>
 
