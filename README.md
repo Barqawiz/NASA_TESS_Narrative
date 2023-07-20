@@ -69,7 +69,7 @@ This tool allows users to interactively explore the data collected by TESS and c
       </style>
 
       <div class="container">
-        <a href="https://barqawiz.github.io/NASA_TESS_Narrative/narrative_scenes.html">
+        <a href="https://barqawiz.github.io/NASA_TESS_Narrative">
         <h1 class="whiter">Click To Open The Narrative <div class="hi">👋</div></h1>
         </a>
       </div>
