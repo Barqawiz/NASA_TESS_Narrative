@@ -203,7 +203,7 @@ countedData.sort((a, b) => a.year - b.year );
          tooltip.transition()
              .duration(200)
              .style("opacity", .9);
-         tooltip.html("Palent Name: " + d.pl_name + "<br/>Equilibrium Temperature: " + d.pl_eqt + "<br/>Orbital Eccentricity: " + d.pl_orbeccen)
+         tooltip.html("Palent Name: " + d.pl_name + "<br/>Equilibrium Tempe.: " + d.pl_eqt + "<br/>Orbital Eccentricity: " + d.pl_orbeccen + "<br/>Distance (pc): " + d.sy_dist)
              .style("left", (event.pageX) + "px")
              .style("top", (event.pageY - 28) + "px");
      })
@@ -325,7 +325,7 @@ if (animate) {
          tooltip.transition()
              .duration(200)
              .style("opacity", .9);
-         tooltip.html("Palent Name: " + d.pl_name + "<br/>Stellar Mass: " + d.st_mass + "<br/>Stellar Radius: " + d.st_rad)
+         tooltip.html("Palent Name: " + d.pl_name + "<br/>Stellar Mass: " + d.st_mass + "<br/>Stellar Radius: " + d.st_rad + d.pl_orbeccen + "<br/>Distance (pc): " + d.sy_dist)
              .style("left", (event.pageX) + "px")
              .style("top", (event.pageY - 28) + "px");
      })
