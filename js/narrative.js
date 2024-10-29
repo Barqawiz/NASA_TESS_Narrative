@@ -266,8 +266,8 @@ if (animate) {
          label: "Potential Habitable Zone",
          align: "left"
      },
-     x: xScatter(350), // Adjusted x position for annotation
-     y: yScatter(0.05), // Adjusted y position for annotation
+     x: xScatter(350), 
+     y: yScatter(0.05),
      dx: 200,
      dy: -50,
      subject: {
@@ -388,8 +388,8 @@ if (animate) {
          label: "Potential Habitable Zone",
          align: "left"
      },
-     x: xScatter2(1), // Adjusted x position for annotation for stellar mass
-     y: yScatter2(1), // Adjusted y position for annotation for stellar radius
+     x: xScatter2(1),
+     y: yScatter2(1),
      dx: -200,
      dy: -50,
      subject: {
@@ -443,7 +443,7 @@ if (animate) {
  // Add button to go to Scene 3
    svg.append("text")
        .attr("x", 10)
-       .attr("y", 920) // adjust accordingly
+       .attr("y", 920)
        .text("Explore Interactive Dashboard")
        .attr("class", "scene3-button")
        .on("click", function() {
@@ -457,8 +457,6 @@ if (animate) {
            // Draw Scene 3
            drawScene3();
        });
-
-   // Make the button look like a real button
    svg.selectAll(".scene3-button")
        .style("cursor", "pointer")
        .style("fill", "steelblue")
@@ -521,7 +519,7 @@ function drawScene2(planet) {
      }
  ];
 
- // Create SVG for the visualization
+ // SVG for the visualization
  var svg = d3.select("#visualization").append("svg")
      .attr("width", 800)
      .attr("height", 680);
@@ -535,7 +533,7 @@ function drawScene2(planet) {
      var scaleMax = Math.max(row.earth.max, row.planet, row.earth.min)
      barScale.domain([0, scaleMax]);
 
-     var yPos = 65 * i + 100; // Adjust y position for each bar
+     var yPos = 65 * i + 100;
 
      svg.append("text")
          .attr("x", 10)
@@ -606,7 +604,7 @@ function drawScene2(planet) {
    // Add button to go to Scene 3
    svg.append("text")
        .attr("x", 160)
-       .attr("y", 640) // adjust accordingly
+       .attr("y", 640) 
        .text("Explore Interactive Dashboard")
        .attr("class", "scene3-button")
        .on("click", function() {
@@ -835,7 +833,7 @@ var dropdownY = d3.select("#visualization")
 dropdownY.selectAll("option").data(fields).enter().append("option").text(d => d);
 dropdownY.property("value", "st_mass");
 
-// Apply filters function using the slider variables
+// slider variables
 function applyFilters() {
 let filteredData = data;
 if (tempValue) { filteredData = filteredData.filter(planet => planet.pl_eqt >= tempValue) }
@@ -844,7 +842,7 @@ if (radiusValue) { filteredData = filteredData.filter(planet => planet.pl_radj <
 if (smassValue) { filteredData = filteredData.filter(planet => planet.st_mass <= smassValue) }
 if (sradValue) { filteredData = filteredData.filter(planet => planet.st_rad <= sradValue) }
 
-// Update the chart based on the filtered data
+// Update the chart based filtered data
 drawChart(filteredData);
 }
 
@@ -858,7 +856,7 @@ function drawChart(data) {
 // Clear any previous charts
 svg.selectAll(".chart").remove();
 
-// Create a dictionary to map the selected axes to their corresponding titles and ranges
+// Create a dictionary to map the selected axes
 var axisDict = {
  "pl_eqt": {
    title: "Equilibrium Temperature",
@@ -896,7 +894,7 @@ var yTitle = axisDict[selectedYAxis].title || selectedYAxis;
 var xRange = axisDict[selectedXAxis].xRange;
 var yRange = axisDict[selectedYAxis].yRange;
 
-// Generate scatter plot chart here
+// Generate scatter plot
 var margin = { top: 50, right: 50, bottom: 50, left: 350 },
  width = 1100 - margin.left - margin.right,
  height = 600 - margin.top - margin.bottom;
