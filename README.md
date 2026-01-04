@@ -34,6 +34,6 @@ Scene 3 brings an interactive dashboard that evolves the visualization based on 
 
 ## Data sources & references
 
-- Exoplanets (TESS confirmed planets, 720): [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/?utm_source=openai)
+- Exoplanets (TESS confirmed planets, 720): [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/)
 
 - Earth baseline values (eccentricity, blackbody/equilibrium temperature, radii): `https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html`
