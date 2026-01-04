@@ -39,3 +39,11 @@ Scene 3 brings an interactive dashboard that evolves the visualization based on 
 - Earth baseline values (eccentricity, blackbody/equilibrium temperature, radii): `https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html`
 
 - Check NASA images [here](https://science.nasa.gov/multimedia/) and MIT mission overview [here](https://tess.mit.edu/mission-overview/).
+
+## Projecct License 
+
+This is the project and code License, not related to the data:
+
+MIT License
+
+Copyright (c) 2023 github.com/Barqawiz
