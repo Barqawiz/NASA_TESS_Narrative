@@ -1072,7 +1072,7 @@ if (showEarth) {
     const legendX = width - 260;
     const legendY = 10;
     const legendW = 250;
-    const legendH = 56;
+    const legendH = 68;
 
     const legend = chart.append("g")
       .attr("class", "earth-chart-legend")
@@ -1098,14 +1098,14 @@ if (showEarth) {
     // row 1: Earth point
     legend.append("circle")
       .attr("cx", legendPadding + 8)
-      .attr("cy", 34)
+      .attr("cy", 36)
       .attr("r", 6)
       .attr("fill", "white")
       .attr("stroke", "#1f77b4")
       .attr("stroke-width", 2);
     legend.append("text")
       .attr("x", legendPadding + 22)
-      .attr("y", 38)
+      .attr("y", 40)
       .text("Earth reference point (approx.)")
       .style("font-size", "11px")
       .style("fill", "#111827");
@@ -1113,7 +1113,7 @@ if (showEarth) {
     // row 2: Range box
     legend.append("rect")
       .attr("x", legendPadding + 2)
-      .attr("y", 42)
+      .attr("y", 50)
       .attr("width", 12)
       .attr("height", 10)
       .attr("rx", 2)
@@ -1121,7 +1121,7 @@ if (showEarth) {
       .attr("stroke", "rgba(70,130,180,0.35)");
     legend.append("text")
       .attr("x", legendPadding + 22)
-      .attr("y", 51)
+      .attr("y", 59)
       .text("Earth-like range box")
       .style("font-size", "11px")
       .style("fill", "#111827");
