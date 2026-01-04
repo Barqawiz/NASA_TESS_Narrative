@@ -37,3 +37,5 @@ Scene 3 brings an interactive dashboard that evolves the visualization based on 
 - Exoplanets (TESS confirmed planets, 720): [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/)
 
 - Earth baseline values (eccentricity, blackbody/equilibrium temperature, radii): `https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html`
+
+- Check NASA images [here](https://science.nasa.gov/multimedia/) and MIT mission overview [here](https://tess.mit.edu/mission-overview/).
