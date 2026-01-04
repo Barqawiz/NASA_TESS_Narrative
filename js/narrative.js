@@ -4,6 +4,44 @@ let initialLoad = true;
 let tooltip = null;
 let navInitialized = false;
 
+// --- Loading splash ---
+const SPLASH_MIN_MS = 2400; // "few seconds" so first-time visitors see the intro
+const SPLASH_IMG_PRIMARY = "images/header.png";
+const SPLASH_IMG_FALLBACK = "images/module-silver.webp";
+let splashShownAt = null;
+
+function initLoadingSplash() {
+  const splash = document.getElementById("loading-splash");
+  if (!splash) return;
+
+  splashShownAt = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
+
+  const img = document.getElementById("loading-splash-image");
+  if (img) {
+    // Ensure we have a fallback if the primary image can't be loaded.
+    img.addEventListener("error", () => {
+      if (!img.src.includes(SPLASH_IMG_FALLBACK)) img.src = SPLASH_IMG_FALLBACK;
+    }, { once: true });
+
+    // If markup was edited to something else, normalize to preferred primary.
+    img.src = SPLASH_IMG_PRIMARY;
+  }
+}
+
+function hideLoadingSplash() {
+  const splash = document.getElementById("loading-splash");
+  if (!splash) return;
+  splash.classList.add("loading-splash--hide");
+}
+
+function hideLoadingSplashWhenReady() {
+  const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
+  const shownAt = splashShownAt ?? now;
+  const elapsed = now - shownAt;
+  const remaining = Math.max(0, SPLASH_MIN_MS - elapsed);
+  window.setTimeout(hideLoadingSplash, remaining);
+}
+
 // --- Earth references (scientific note) ---
 // The dataset field `pl_eqt` is equilibrium temperature (K), which for Earth is ~255 K.
 // A common "temperate" equilibrium-temperature window used as a heuristic is ~185–303 K.
@@ -93,6 +131,9 @@ function resetFilter(event) {
 
 }
 
+// Start splash immediately (JS loads after body in the HTML)
+initLoadingSplash();
+
 // Load the data
 d3.csv("data/tess_confirmed_plannetsv2.csv", (d) => {
   // Defensive mapping: only keep columns actually used by the visualization.
@@ -112,11 +153,21 @@ d3.csv("data/tess_confirmed_plannetsv2.csv", (d) => {
  // Keep all rows so the dataset size matches the archive snapsho.
  data = myData;
 
+ // Hide splash once data is ready (with a minimum display time for the intro text).
+ hideLoadingSplashWhenReady();
+
  // wire nav once data is ready
  initNav();
 
  // Scene 1: Overview
  drawScene1(null);
+}).catch(function(err) {
+  // If loading fails, remove the splash so the user can at least see the page.
+  hideLoadingSplash();
+  // eslint-disable-next-line no-console
+  console.error("Failed to load TESS CSV:", err);
+  d3.select("#visualization")
+    .html("<div style='padding:18px;color:#b91c1c;font-weight:700;'>Failed to load data. Please refresh and try again.</div>");
 });
 
 function drawScene1(filteredData) {
