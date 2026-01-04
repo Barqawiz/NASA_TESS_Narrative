@@ -2,6 +2,7 @@ let data = null;
 let currentScene = null;
 let initialLoad = true;
 let tooltip = null;
+let navInitialized = false;
 
 function toNum(v) {
   if (v === null || v === undefined) return null;
@@ -23,6 +24,36 @@ function getTooltip() {
     .attr("class", "tooltip")
     .style("opacity", 0);
   return tooltip;
+}
+
+function setActiveNav(scene) {
+  const s1 = document.getElementById("nav-scene1");
+  const s3 = document.getElementById("nav-scene3");
+  if (!s1 || !s3) return;
+  s1.classList.toggle("nav-btn--active", scene === "s1" || scene === "s2");
+  s3.classList.toggle("nav-btn--active", scene === "s3");
+}
+
+function initNav() {
+  if (navInitialized) return;
+  navInitialized = true;
+
+  const s1 = document.getElementById("nav-scene1");
+  const s3 = document.getElementById("nav-scene3");
+  if (s1) {
+    s1.addEventListener("click", () => {
+      if (!data) return;
+      d3.select("#visualization").html("");
+      drawScene1(null);
+    });
+  }
+  if (s3) {
+    s3.addEventListener("click", () => {
+      if (!data) return;
+      d3.select("#visualization").html("");
+      drawScene3();
+    });
+  }
 }
 
 function resetFilter(event) {
@@ -66,6 +97,9 @@ d3.csv("data/tess_confirmed_plannets.csv").then(function(myData) {
    return out;
  });
 
+ // wire nav once data is ready
+ initNav();
+
  // Scene 1: Overview
  drawScene1(null);
 });
@@ -74,6 +108,7 @@ function drawScene1(filteredData) {
 
  // set the current scene
  currentScene = "s1";
+ setActiveNav("s1");
 
  // contorl filtered data
  if (!filteredData) {
@@ -508,33 +543,14 @@ if (animate) {
 
 
  // Add button to go to Scene 3
-   svg.append("text")
-       .attr("x", 10)
-       .attr("y", 920)
-       .text("Explore Interactive Dashboard")
-       .attr("class", "scene3-button")
-       .on("click", function() {
-           currentScene = "s3";
-           // clean the tool tip
-        const tooltip = getTooltip();
-        tooltip.transition()
-          .duration(500)
-          .style("opacity", 0);
-         // Clear the visualization
-         d3.select("#visualization").html("");
-           // Draw Scene 3
-           drawScene3();
-       });
-   svg.selectAll(".scene3-button")
-       .style("cursor", "pointer")
-       .style("fill", "steelblue")
-       .style("text-decoration", "underline");
+ // Navigation lives in the top menu now
  
 }
 
 function drawScene2(planet) {
  // set the current scene
  currentScene = "s2";
+ setActiveNav("s2");
 
  // Comparison data
  var comparisonData = [{
@@ -588,8 +604,9 @@ function drawScene2(planet) {
  ];
 
  // SVG for the visualization
- var svg = d3.select("#visualization").append("svg")
-     .attr("viewBox", "0 0 800 680")
+ const vizRoot = d3.select("#visualization");
+ var svg = vizRoot.append("svg")
+     .attr("viewBox", "0 0 800 600")
      .attr("preserveAspectRatio", "xMidYMid meet");
 
  var barHeight = 20;
@@ -651,44 +668,22 @@ function drawScene2(planet) {
          .attr("font-size", "10px");
  });
 
- // Add back button to go back to Scene 1
- svg.append("text")
-     .attr("x", 10)
-     .attr("y", 640)
-     .text("Back to Scene 1")
-     .attr("class", "back-button")
-     .on("click", function() {
-         // Clear the visualization
-         d3.select("#visualization").html("");
-         // Draw Scene 1
-         drawScene1(null);
-     });
-
- // Make the back button look like a real button
- svg.selectAll(".back-button")
-     .style("cursor", "pointer")
-     .style("fill", "steelblue")
-     .style("text-decoration", "underline");
-
-
-   // Add button to go to Scene 3
-   svg.append("text")
-       .attr("x", 160)
-       .attr("y", 640) 
-       .text("Explore Interactive Dashboard")
-       .attr("class", "scene3-button")
-       .on("click", function() {
-           // Clear the visualization
-           d3.select("#visualization").html("");
-           // Draw Scene 3
-           drawScene3();
-       });
-
-   // Make the button look like a real button
-   svg.selectAll(".scene3-button")
-       .style("cursor", "pointer")
-       .style("fill", "steelblue")
-       .style("text-decoration", "underline");
+ // Scene 2 actions (real buttons below the chart)
+ const actions = vizRoot.append("div").attr("class", "scene-actions");
+ actions.append("button")
+   .attr("class", "btn btn-outline-primary")
+   .text("Back to Scene 1")
+   .on("click", () => {
+     d3.select("#visualization").html("");
+     drawScene1(null);
+   });
+ actions.append("button")
+   .attr("class", "btn btn-primary")
+   .text("Explore Interactive Dashboard")
+   .on("click", () => {
+     d3.select("#visualization").html("");
+     drawScene3();
+   });
 
  // Adding a title
  svg.append("text")
@@ -741,6 +736,7 @@ function drawScene2(planet) {
 function drawScene3() {
 
 currentScene = "s3";
+setActiveNav("s3");
 
 // State
 let tempMin = 0;
