@@ -134,6 +134,21 @@ p {
     text-align: center;
 }
 
+.page-footer a {
+    color: inherit;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.page-footer a:hover {
+    text-decoration: underline;
+}
+
+.footer-sep {
+    margin: 0 8px;
+    opacity: 0.6;
+}
+
 .tooltip {
     position: absolute;
     text-align: center;

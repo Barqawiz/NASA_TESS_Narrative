@@ -31,3 +31,13 @@ Scene 2 provides a toolkit to delve into the attributes of individual planets. I
 Scene 3 brings an interactive dashboard that evolves the visualization based on your preferences for a tailored analytical insight.
 
 <img src="references/scene3_ahmadai.png" width="450em">
+
+## Data sources & references
+
+- Exoplanets (TESS confirmed planets, 720): [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/?utm_source=openai)
+
+- Earth baseline values (eccentricity, blackbody/equilibrium temperature, radii): `https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html`
+
+- Earth blackbody/equilibrium temperature used in code: ~255 K (matches fact sheet)
+- Earth orbital eccentricity used in code: ~0.0167 (matches fact sheet)
+- Earth radius in Jupiter radii (~0.089) is derived from Earth & Jupiter radii (NSSDC fact sheets)

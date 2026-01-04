@@ -4,6 +4,14 @@ let initialLoad = true;
 let tooltip = null;
 let navInitialized = false;
 
+// --- Earth references (scientific note) ---
+// The dataset field `pl_eqt` is equilibrium temperature (K), which for Earth is ~255 K.
+// A common "temperate" equilibrium-temperature window used as a heuristic is ~185–303 K.
+const EARTH_EQT = 255;
+const EARTH_EQT_RANGE = { min: 185, max: 303 };
+const EARTH_ECC_RANGE = { min: 0, max: 0.2 };
+const SUNLIKE_RANGE = { min: 0.8, max: 1.2 };
+
 function toNum(v) {
   if (v === null || v === undefined) return null;
   const s = String(v).trim();
@@ -101,7 +109,8 @@ d3.csv("data/tess_confirmed_plannetsv2.csv", (d) => {
     pl_radj: toNum(d.pl_radj),
   };
 }).then(function(myData) {
- data = myData.filter(d => d && d.pl_name);
+ // Keep all rows so the dataset size matches the archive snapsho.
+ data = myData;
 
  // wire nav once data is ready
  initNav();
@@ -278,14 +287,28 @@ countedData.sort((a, b) => a.year - b.year );
      .attr("r", 0)
      .attr("fill", (d) => colorScale(d.disc_year))
      .attr("stroke", (d) => {
-         if (d.pl_eqt >= 273.15 && d.pl_eqt <= 373.15 && d.pl_orbeccen >= 0 && d.pl_orbeccen <= 0.2) {
+         if (
+           d.pl_eqt !== null &&
+           d.pl_orbeccen !== null &&
+           d.pl_eqt >= EARTH_EQT_RANGE.min &&
+           d.pl_eqt <= EARTH_EQT_RANGE.max &&
+           d.pl_orbeccen >= EARTH_ECC_RANGE.min &&
+           d.pl_orbeccen <= EARTH_ECC_RANGE.max
+         ) {
              return "black";
          } else {
              return null;
          }
      })
      .attr("stroke-width", (d) => {
-         if (d.pl_eqt >= 273.15 && d.pl_eqt <= 373.15 && d.pl_orbeccen >= 0 && d.pl_orbeccen <= 0.2) {
+         if (
+           d.pl_eqt !== null &&
+           d.pl_orbeccen !== null &&
+           d.pl_eqt >= EARTH_EQT_RANGE.min &&
+           d.pl_eqt <= EARTH_EQT_RANGE.max &&
+           d.pl_orbeccen >= EARTH_ECC_RANGE.min &&
+           d.pl_orbeccen <= EARTH_ECC_RANGE.max
+         ) {
              return 1.5;
          } else {
              return 0;
@@ -367,7 +390,7 @@ if (animate) {
          label: "Potential Habitable Zone",
          align: "left"
      },
-     x: xScatter(350), 
+     x: xScatter(290),
      y: yScatter(0.05),
      dx: 200,
      dy: -50,
@@ -411,7 +434,14 @@ if (animate) {
      .attr("r", 0)
      .attr("fill", (d) => colorScale(d.disc_year))
      .attr("stroke", (d) => {
-         if (d.st_mass >= 0.8 && d.st_mass <= 1.2 && d.st_rad >= 0.8 && d.st_rad <= 1.2) {
+         if (
+           d.st_mass !== null &&
+           d.st_rad !== null &&
+           d.st_mass >= SUNLIKE_RANGE.min &&
+           d.st_mass <= SUNLIKE_RANGE.max &&
+           d.st_rad >= SUNLIKE_RANGE.min &&
+           d.st_rad <= SUNLIKE_RANGE.max
+         ) {
              // condition for earth similar stars
              return "black";
          } else {
@@ -419,7 +449,14 @@ if (animate) {
          }
      })
      .attr("stroke-width", (d) => {
-         if (d.st_mass >= 0.8 && d.st_mass <= 1.2 && d.st_rad >= 0.8 && d.st_rad <= 1.2) {
+         if (
+           d.st_mass !== null &&
+           d.st_rad !== null &&
+           d.st_mass >= SUNLIKE_RANGE.min &&
+           d.st_mass <= SUNLIKE_RANGE.max &&
+           d.st_rad >= SUNLIKE_RANGE.min &&
+           d.st_rad <= SUNLIKE_RANGE.max
+         ) {
              return 1.5;
          } else {
              return 0;
@@ -560,8 +597,8 @@ function drawScene2(planet) {
  var comparisonData = [{
          parameter: 'Equilibrium Temperature',
          earth: {
-             min: 273.15,
-             max: 373.15
+             min: EARTH_EQT_RANGE.min,
+             max: EARTH_EQT_RANGE.max
          },
          planet: planet.pl_eqt
      },
@@ -584,8 +621,8 @@ function drawScene2(planet) {
      {
          parameter: 'Orbital Eccentricity',
          earth: {
-             min: 0,
-             max: 0.2
+             min: EARTH_ECC_RANGE.min,
+             max: EARTH_ECC_RANGE.max
          },
          planet: planet.pl_orbeccen
      },
@@ -1026,18 +1063,18 @@ chart.selectAll("circle")
 // Earth overlay and reference ranges (only for supported axes)
 if (showEarth) {
   const earth = {
-    pl_eqt: 288,
+    pl_eqt: EARTH_EQT,
     pl_orbeccen: 0.0167,
     pl_radj: 0.0892, // ~Earth radius in Jupiter radii
     st_mass: 1.0,
     st_rad: 1.0
   };
   const earthRanges = {
-    pl_eqt: { min: 273.15, max: 373.15 },
-    pl_orbeccen: { min: 0, max: 0.2 },
+    pl_eqt: { min: EARTH_EQT_RANGE.min, max: EARTH_EQT_RANGE.max },
+    pl_orbeccen: { min: EARTH_ECC_RANGE.min, max: EARTH_ECC_RANGE.max },
     pl_radj: { min: 0.0892, max: 0.1427 },
-    st_mass: { min: 0.8, max: 1.2 },
-    st_rad: { min: 0.8, max: 1.2 }
+    st_mass: { min: SUNLIKE_RANGE.min, max: SUNLIKE_RANGE.max },
+    st_rad: { min: SUNLIKE_RANGE.min, max: SUNLIKE_RANGE.max }
   };
 
   const xr = earthRanges[selectedXAxis];
