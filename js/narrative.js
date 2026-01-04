@@ -26,6 +26,21 @@ function getTooltip() {
   return tooltip;
 }
 
+function getDiscYearExtent() {
+  if (!data) return [2018, 2023];
+  const years = data.map(d => d.disc_year).filter(v => v !== null && Number.isFinite(v));
+  const extent = d3.extent(years);
+  if (!extent || extent[0] === undefined || extent[1] === undefined) return [2018, 2023];
+  return extent;
+}
+
+function makeColorScale() {
+  const [minY, maxY] = getDiscYearExtent();
+  return d3.scaleSequential()
+    .domain([minY, maxY])
+    .interpolator(d3.interpolateOranges);
+}
+
 function setActiveNav(scene) {
   const s1 = document.getElementById("nav-scene1");
   const s3 = document.getElementById("nav-scene3");
@@ -71,31 +86,22 @@ function resetFilter(event) {
 }
 
 // Load the data
-d3.csv("data/tess_confirmed_plannets.csv").then(function(myData) {
- const numericFields = [
-   "disc_year",
-   "pl_orbper",
-   "pl_orbsmax",
-   "pl_rade",
-   "pl_radj",
-   "pl_bmasse",
-   "pl_bmassj",
-   "pl_orbeccen",
-   "pl_insol",
-   "pl_eqt",
-   "st_teff",
-   "st_rad",
-   "st_mass",
-   "st_met",
-   "st_logg",
-   "sy_dist"
- ];
-
- data = myData.map((d) => {
-   const out = { ...d };
-   for (const f of numericFields) out[f] = toNum(d[f]);
-   return out;
- });
+d3.csv("data/tess_confirmed_plannetsv2.csv", (d) => {
+  // Defensive mapping: only keep columns actually used by the visualization.
+  // This prevents crashes if the CSV gains extra columns or changes ordering.
+  return {
+    pl_name: d.pl_name,
+    disc_year: toNum(d.disc_year),
+    pl_eqt: toNum(d.pl_eqt),
+    pl_orbeccen: toNum(d.pl_orbeccen),
+    sy_dist: toNum(d.sy_dist),
+    st_mass: toNum(d.st_mass),
+    st_rad: toNum(d.st_rad),
+    pl_orbsmax: toNum(d.pl_orbsmax),
+    pl_radj: toNum(d.pl_radj),
+  };
+}).then(function(myData) {
+ data = myData.filter(d => d && d.pl_name);
 
  // wire nav once data is ready
  initNav();
@@ -134,9 +140,7 @@ countedData.sort((a, b) => a.year - b.year );
 
 
  // Prepare color scale
- var colorScale = d3.scaleSequential()
-     .domain([2018, 2023])
-     .interpolator(d3.interpolateOranges);
+ var colorScale = makeColorScale();
 
  // Create SVG for the visualization
  var svg = d3.select("#visualization").append("svg")
@@ -748,6 +752,7 @@ let xAxisValue = "pl_eqt";
 let yAxisValue = "st_mass";
 let nameQuery = "";
 let showEarth = true;
+const colorScale = makeColorScale();
 
 // Root layout
 const root = d3.select("#visualization");
@@ -1173,11 +1178,6 @@ chart.append("text")
 .text(yTitle)
 .style("text-anchor", "middle");
 };
-
-// Add colors
-var colorScale = d3.scaleSequential()
-.domain([2018, 2023])
-.interpolator(d3.interpolateOranges);
 
 // Add back button to go back to Scene 1
 actionsRow.append("button")
