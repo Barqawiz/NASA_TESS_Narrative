@@ -84,6 +84,48 @@ p {
     background: rgba(255,255,255,0.60);
 }
 
+.nav-text--short {
+    display: none;
+}
+
+@media screen and (max-width: 640px) {
+    .top-nav {
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+
+    .nav-btn {
+        font-size: 13px;
+        padding: 9px 10px;
+    }
+
+    /* shorten labels to keep everything on one row */
+    .nav-text--full {
+        display: none;
+    }
+    .nav-text--short {
+        display: inline;
+    }
+
+    /* How-to becomes icon-only */
+    .nav-btn--howto {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        font-size: 0; /* hide "How to" text */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+    }
+    .nav-btn--howto::before {
+        content: "?";
+        font-size: 18px;
+        font-weight: 900;
+        line-height: 1;
+    }
+}
+
 .scene-actions {
     display: flex;
     gap: 12px;
@@ -147,6 +189,26 @@ p {
 .footer-sep {
     margin: 0 8px;
     opacity: 0.6;
+}
+
+/* GitHub star button (How-to modal) */
+.github-star-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: #111827;
+  color: #f9fafb !important;
+  font-weight: 800;
+  text-decoration: none !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+}
+
+.github-star-btn:hover {
+  background: #0b1220;
+  border-color: rgba(0,0,0,0.18);
 }
 
 .tooltip {
